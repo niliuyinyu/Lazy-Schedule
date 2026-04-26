@@ -36,6 +36,8 @@ export interface Tag {
   name: string
   type: 'ai' | 'user'
   color: string
+  createdAt?: Date
+  isDefault?: boolean
 }
 
 export interface Category {
