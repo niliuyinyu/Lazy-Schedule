@@ -178,8 +178,8 @@ class WebDAVProvider implements StorageProvider {
   private async readFile(path: string): Promise<Blob> {
     const { Filesystem } = await import('@capacitor/filesystem')
     const file = await Filesystem.readFile({ path: path })
-    const base64 = file.data
-    const binary = atob(base64)
+    const base64Data = typeof file.data === 'string' ? file.data : ''
+    const binary = atob(base64Data)
     const bytes = new Uint8Array(binary.length)
     for (let i = 0; i < binary.length; i++) {
       bytes[i] = binary.charCodeAt(i)
@@ -267,8 +267,8 @@ class AliyunProvider implements StorageProvider {
   private async readFile(path: string): Promise<Blob> {
     const { Filesystem } = await import('@capacitor/filesystem')
     const file = await Filesystem.readFile({ path: path })
-    const base64 = file.data
-    const binary = atob(base64)
+    const base64Data = typeof file.data === 'string' ? file.data : ''
+    const binary = atob(base64Data)
     const bytes = new Uint8Array(binary.length)
     for (let i = 0; i < binary.length; i++) {
       bytes[i] = binary.charCodeAt(i)
