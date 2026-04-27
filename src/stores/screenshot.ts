@@ -11,6 +11,7 @@ export const useScreenshotStore = defineStore('screenshot', () => {
   const isLoading = ref(false)
   const isScanning = ref(false)
   const lastScanTime = ref<Date | null>(null)
+  const settings = ref<{ mapApp?: string }>({})
 
   const sortedScreenshots = computed(() => {
     return [...screenshots.value].sort((a, b) =>
@@ -90,6 +91,11 @@ export const useScreenshotStore = defineStore('screenshot', () => {
     await loadScreenshots()
   }
 
+  async function saveScreenshot(screenshot: Screenshot) {
+    await screenshotService.updateScreenshot(screenshot.id, screenshot)
+    await loadScreenshots()
+  }
+
   return {
     screenshots,
     groups,
@@ -98,6 +104,7 @@ export const useScreenshotStore = defineStore('screenshot', () => {
     isLoading,
     isScanning,
     lastScanTime,
+    settings,
     sortedScreenshots,
     groupedScreenshots,
     initialize,
@@ -109,6 +116,7 @@ export const useScreenshotStore = defineStore('screenshot', () => {
     deleteScreenshot,
     updateScreenshot,
     addTag,
-    removeTag
+    removeTag,
+    saveScreenshot
   }
 })

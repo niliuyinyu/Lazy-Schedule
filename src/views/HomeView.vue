@@ -2,12 +2,10 @@
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useScreenshotStore } from '@/stores/screenshot'
-import { useSettingsStore } from '@/stores/settings'
 import dayjs from 'dayjs'
 
 const router = useRouter()
 const screenshotStore = useScreenshotStore()
-const settingsStore = useSettingsStore()
 
 const todayCount = computed(() => {
   const today = dayjs().startOf('day')

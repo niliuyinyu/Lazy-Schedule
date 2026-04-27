@@ -82,8 +82,8 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  async function testStorageConnection(): Promise<boolean> {
-    if (!storageConfig.value) return false
+  async function testStorageConnection(): Promise<{ success: boolean; error?: string }> {
+    if (!storageConfig.value) return { success: false, error: 'No storage config' }
     return await storageService.testConnection(storageConfig.value)
   }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Fuse from 'fuse.js'
 import { useScreenshotStore } from '@/stores/screenshot'

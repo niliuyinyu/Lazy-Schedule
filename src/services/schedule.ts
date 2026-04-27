@@ -101,6 +101,30 @@ class ScheduleService {
 
     return ics
   }
+
+  async exportToCalendar(schedule: Schedule): Promise<string> {
+    return this.generateICS(schedule)
+  }
+
+  async openMapApp(location: string, mapApp: string): Promise<void> {
+    let url = ''
+    
+    switch (mapApp) {
+      case 'amap':
+        url = `amapuri://route/plan?dname=${encodeURIComponent(location)}&dev=0`
+        break
+      case 'baidumap':
+        url = `baidumap://map/direction?destination=${encodeURIComponent(location)}`
+        break
+      case 'tencentmap':
+        url = `qqmap://map/routeplan?type=drive&to=${encodeURIComponent(location)}`
+        break
+      default:
+        url = `https://maps.apple.com/?q=${encodeURIComponent(location)}`
+    }
+
+    window.open(url, '_blank')
+  }
 }
 
 export const scheduleService = new ScheduleService()
