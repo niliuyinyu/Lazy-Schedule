@@ -85,7 +85,7 @@ class OcrService {
     return this.simpleTextDetection(imageData)
   }
 
-  private simpleTextDetection(imageData: ImageData): string | null {
+  private simpleTextDetection(_imageData: ImageData): string | null {
     return null
   }
 }
