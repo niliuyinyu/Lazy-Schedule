@@ -82,9 +82,7 @@ class OcrService {
     if (!ctx) return null
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    const text = this.simpleTextDetection(imageData)
-
-    return text || null
+    return this.simpleTextDetection(imageData)
   }
 
   private simpleTextDetection(imageData: ImageData): string | null {
