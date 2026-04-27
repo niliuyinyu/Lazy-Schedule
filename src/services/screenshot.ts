@@ -1,6 +1,5 @@
 import type { Screenshot } from '@/types'
 import { DatabaseService } from './database'
-import { LLMService } from './llm'
 import { Capacitor } from '@capacitor/core'
 
 class ScreenshotService {

@@ -1,4 +1,4 @@
-import type { Analysis, Schedule } from '@/types'
+import type { Analysis } from '@/types'
 
 interface LLMResponse {
   tags: string[]

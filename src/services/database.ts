@@ -163,10 +163,10 @@ class DatabaseService {
     }
 
     const testTags: Tag[] = [
-      { id: crypto.randomUUID(), name: '重要', color: '#ff4d4f', createdAt: new Date(), isDefault: true },
-      { id: crypto.randomUUID(), name: '微信', color: '#52c41a', createdAt: new Date(), isDefault: true },
-      { id: crypto.randomUUID(), name: '会议', color: '#1890ff', createdAt: new Date(), isDefault: true },
-      { id: crypto.randomUUID(), name: '转账', color: '#eb2f96', createdAt: new Date(), isDefault: true }
+      { id: crypto.randomUUID(), name: '重要', color: '#ff4d4f', type: 'user', createdAt: new Date(), isDefault: true },
+      { id: crypto.randomUUID(), name: '微信', color: '#52c41a', type: 'user', createdAt: new Date(), isDefault: true },
+      { id: crypto.randomUUID(), name: '会议', color: '#1890ff', type: 'user', createdAt: new Date(), isDefault: true },
+      { id: crypto.randomUUID(), name: '转账', color: '#eb2f96', type: 'user', createdAt: new Date(), isDefault: true }
     ]
 
     const tagTx = db.transaction('tags', 'readwrite')
