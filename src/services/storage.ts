@@ -248,19 +248,19 @@ class AliyunProvider implements StorageProvider {
     }
   }
 
-  async download(remotePath: string, localPath: string): Promise<void> {
+  async download(_remotePath: string, _localPath: string): Promise<void> {
     throw new Error('Download not implemented')
   }
 
-  async exists(remotePath: string): Promise<boolean> {
+  async exists(_remotePath: string): Promise<boolean> {
     return false
   }
 
-  async delete(remotePath: string): Promise<void> {
+  async delete(_remotePath: string): Promise<void> {
     throw new Error('Delete not implemented')
   }
 
-  async list(remoteDir: string): Promise<FileEntry[]> {
+  async list(_remoteDir: string): Promise<FileEntry[]> {
     return []
   }
 

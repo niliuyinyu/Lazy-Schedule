@@ -42,7 +42,7 @@ class ScreenshotService {
 
     for (const path of paths) {
       try {
-        const files = await Filesystem.readDir({ path })
+        const files = await Filesystem.readdir({ path })
         for (const file of files) {
           if (file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')) {
             const fileHash = `${file.name}_${file.modifiedTime}`

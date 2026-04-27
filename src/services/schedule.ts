@@ -6,7 +6,7 @@ class ScheduleService {
       const icsContent = this.generateICS(schedule)
       const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' })
 
-      if (window.navigator.share) {
+      if (typeof window.navigator.share === 'function') {
         const file = new File([blob], `${schedule.eventName}.ics`, { type: 'text/calendar' })
         await navigator.share({
           files: [file],
