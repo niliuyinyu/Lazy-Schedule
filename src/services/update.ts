@@ -1,8 +1,7 @@
 import { Capacitor } from '@capacitor/core'
-import { Browser } from '@capacitor/browser'
 
 const GITHUB_REPO = 'niliuyinyu/Lazy-Schedule'
-const CURRENT_VERSION = '1.0.0'
+const CURRENT_VERSION = '1.0.1'
 
 interface ReleaseInfo {
   tag_name: string
@@ -25,8 +24,6 @@ interface UpdateInfo {
 }
 
 class UpdateService {
-  private currentVersion: string = CURRENT_VERSION
-
   async getCurrentVersion(): Promise<string> {
     if (Capacitor.isNativePlatform()) {
       try {
@@ -111,9 +108,7 @@ class UpdateService {
         return { success: false, error: '只能在App中使用此功能' }
       }
 
-      await Browser.openUrl({
-        url: downloadUrl
-      })
+      window.open(downloadUrl, '_blank')
 
       return { success: true }
     } catch (error) {
@@ -124,7 +119,7 @@ class UpdateService {
 
   async openGitHubReleases(): Promise<void> {
     const url = `https://github.com/${GITHUB_REPO}/releases/latest`
-    await Browser.openUrl({ url })
+    window.open(url, '_blank')
   }
 
   formatSize(bytes: number): string {
