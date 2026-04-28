@@ -21,12 +21,12 @@ export default defineConfig({
         manualChunks: {
           'vendor': ['vue', 'vue-router', 'pinia'],
           'capacitor': ['@capacitor/core', '@capacitor/cli'],
-          'utils': ['dayjs', 'fuse.js']
+          'utils': ['dayjs']
         }
       }
     }
   },
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'pinia', 'dayjs', 'fuse.js']
+    include: ['vue', 'vue-router', 'pinia', 'dayjs']
   }
 })
