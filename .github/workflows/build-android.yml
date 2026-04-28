@@ -36,33 +36,11 @@ jobs:
     - name: Sync Capacitor
       run: npx cap sync android
 
-    - name: Get app version
-      id: version
-      run: |
-        APP_VERSION=$(grep -oP '(?<=version":")[^"]+' package.json | head -1)
-        if [ -z "$APP_VERSION" ]; then
-          APP_VERSION="1.0.0"
-        fi
-        echo "APP_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT
-        echo "TAG_NAME=v$APP_VERSION" >> $GITHUB_OUTPUT
-
     - name: Build Debug APK
       run: |
         cd android
         chmod +x gradlew
         ./gradlew assembleDebug
-
-    - name: Upload APK to Release
-      uses: softprops/action-gh-release@v1
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      with:
-        tag_name: ${{ steps.version.outputs.TAG_NAME }}
-        release_name: 懒人日程 v${{ steps.version.outputs.APP_VERSION }}
-        draft: false
-        prerelease: false
-        files: android/app/build/outputs/apk/debug/app-debug.apk
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
