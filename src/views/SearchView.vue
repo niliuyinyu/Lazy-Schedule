@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import Fuse from 'fuse.js'
 import { useScreenshotStore } from '@/stores/screenshot'
 
 const router = useRouter()
@@ -10,13 +9,6 @@ const screenshotStore = useScreenshotStore()
 const searchQuery = ref('')
 const searchResults = ref<typeof screenshotStore.screenshots>([])
 const isSearching = ref(false)
-
-const fuse = computed(() => {
-  return new Fuse(screenshotStore.screenshots, {
-    keys: ['ocrText', 'analysis.summary', 'analysis.tags'],
-    threshold: 0.3
-  })
-})
 
 function goBack() {
   router.back()
@@ -29,8 +21,15 @@ function handleSearch() {
   }
 
   isSearching.value = true
-  const results = fuse.value.search(searchQuery.value)
-  searchResults.value = results.map(r => r.item)
+  const query = searchQuery.value.toLowerCase()
+  searchResults.value = screenshotStore.screenshots.filter(shot => {
+    const text = [
+      shot.ocrText || '',
+      shot.analysis?.summary || '',
+      (shot.analysis?.tags || []).join(' ')
+    ].join(' ').toLowerCase()
+    return text.includes(query)
+  })
   isSearching.value = false
 }
 
