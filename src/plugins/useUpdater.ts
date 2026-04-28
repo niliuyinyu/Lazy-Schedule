@@ -1,23 +1,34 @@
 import { Capacitor } from '@capacitor/core'
+import { updateService } from '@/services/update'
 
 export function useUpdater() {
   async function checkForUpdates() {
     if (!Capacitor.isNativePlatform()) {
       return { hasUpdate: false }
     }
-    return { hasUpdate: false }
+
+    const result = await updateService.checkForUpdate()
+    return { hasUpdate: result.available, ...result }
   }
 
   async function downloadUpdate() {
-    console.log('Auto-update not configured')
+    const result = await updateService.checkForUpdate()
+    if (result.available && result.downloadUrl) {
+      return await updateService.downloadUpdate(result.downloadUrl)
+    }
+    return { success: false, error: '没有可用的更新' }
   }
 
   async function installUpdate() {
-    console.log('Auto-update not configured')
+    return await updateService.openGitHubReleases()
   }
 
   async function checkAndInstall() {
-    return { updated: false }
+    const updateInfo = await checkForUpdates()
+    if (updateInfo.hasUpdate) {
+      return { updated: false, hasUpdate: true, updateInfo }
+    }
+    return { updated: false, hasUpdate: false }
   }
 
   return {
