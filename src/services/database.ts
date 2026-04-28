@@ -1,7 +1,7 @@
-import type { Screenshot, Category, Tag, Analysis } from '@/types'
+import type { Screenshot, Category, Tag, Analysis, AlbumPath } from '@/types'
 
 const DB_NAME = 'jieli-db'
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 class DatabaseService {
   private db: IDBDatabase | null = null
@@ -46,6 +46,11 @@ class DatabaseService {
 
         if (!db.objectStoreNames.contains('screenshot_tags')) {
           db.createObjectStore('screenshot_tags', { keyPath: ['screenshotId', 'tagId'] })
+        }
+
+        if (!db.objectStoreNames.contains('album_paths')) {
+          const albumPathStore = db.createObjectStore('album_paths', { keyPath: 'id' })
+          albumPathStore.createIndex('path', 'path', { unique: true })
         }
 
         this.initDefaultData(db)
@@ -173,6 +178,18 @@ class DatabaseService {
     const tagStore = tagTx.objectStore('tags')
     for (const tag of testTags) {
       tagStore.put(tag)
+    }
+
+    const albumPaths: AlbumPath[] = [
+      { id: crypto.randomUUID(), name: '截图', path: 'Screenshots', isEnabled: true, isDefault: true },
+      { id: crypto.randomUUID(), name: 'DCIM截图', path: 'DCIM/Screenshots', isEnabled: true, isDefault: true },
+      { id: crypto.randomUUID(), name: '图片截图', path: 'Pictures/Screenshots', isEnabled: true, isDefault: true }
+    ]
+
+    const albumTx = db.transaction('album_paths', 'readwrite')
+    const albumStore = albumTx.objectStore('album_paths')
+    for (const albumPath of albumPaths) {
+      albumStore.put(albumPath)
     }
   }
 
@@ -329,6 +346,71 @@ class DatabaseService {
       const tx = this.db.transaction('screenshot_tags', 'readwrite')
       const store = tx.objectStore('screenshot_tags')
       const request = store.delete([screenshotId, tagId])
+
+      request.onsuccess = () => resolve()
+      request.onerror = () => reject(request.error)
+    })
+  }
+
+  async getAlbumPaths(): Promise<AlbumPath[]> {
+    return new Promise((resolve, reject) => {
+      if (!this.db) {
+        resolve([])
+        return
+      }
+      const tx = this.db.transaction('album_paths', 'readonly')
+      const store = tx.objectStore('album_paths')
+      const request = store.getAll()
+
+      request.onsuccess = () => resolve(request.result)
+      request.onerror = () => reject(request.error)
+    })
+  }
+
+  async insertAlbumPath(albumPath: AlbumPath): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.db) {
+        resolve()
+        return
+      }
+      const tx = this.db.transaction('album_paths', 'readwrite')
+      const store = tx.objectStore('album_paths')
+      const request = store.put(albumPath)
+
+      request.onsuccess = () => resolve()
+      request.onerror = () => reject(request.error)
+    })
+  }
+
+  async updateAlbumPath(id: string, data: Partial<AlbumPath>): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.db) {
+        resolve()
+        return
+      }
+      const tx = this.db.transaction('album_paths', 'readwrite')
+      const store = tx.objectStore('album_paths')
+      const getRequest = store.get(id)
+
+      getRequest.onsuccess = () => {
+        const albumPath = { ...getRequest.result, ...data }
+        const putRequest = store.put(albumPath)
+        putRequest.onsuccess = () => resolve()
+        putRequest.onerror = () => reject(putRequest.error)
+      }
+      getRequest.onerror = () => reject(getRequest.error)
+    })
+  }
+
+  async deleteAlbumPath(id: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.db) {
+        resolve()
+        return
+      }
+      const tx = this.db.transaction('album_paths', 'readwrite')
+      const store = tx.objectStore('album_paths')
+      const request = store.delete(id)
 
       request.onsuccess = () => resolve()
       request.onerror = () => reject(request.error)

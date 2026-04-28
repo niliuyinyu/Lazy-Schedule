@@ -1,4 +1,4 @@
-import type { Screenshot } from '@/types'
+import type { Screenshot, AlbumPath } from '@/types'
 import { DatabaseService } from './database'
 import { Capacitor } from '@capacitor/core'
 
@@ -25,6 +25,22 @@ class ScreenshotService {
     return await this.db.getTags()
   }
 
+  async getAlbumPaths(): Promise<AlbumPath[]> {
+    return await this.db.getAlbumPaths()
+  }
+
+  async addAlbumPath(albumPath: AlbumPath): Promise<void> {
+    return await this.db.insertAlbumPath(albumPath)
+  }
+
+  async updateAlbumPath(id: string, data: Partial<AlbumPath>): Promise<void> {
+    return await this.db.updateAlbumPath(id, data)
+  }
+
+  async deleteAlbumPath(id: string): Promise<void> {
+    return await this.db.deleteAlbumPath(id)
+  }
+
   async scanNewScreenshots() {
     if (!Capacitor.isNativePlatform()) {
       console.log('Running in browser, skipping native scan')
@@ -34,22 +50,19 @@ class ScreenshotService {
     const { Filesystem } = await import('@capacitor/filesystem')
     const screenshots: Screenshot[] = []
 
-    const paths = [
-      'Screenshots',
-      'DCIM/Screenshots',
-      'Pictures/Screenshots'
-    ]
+    const albumPaths = await this.db.getAlbumPaths()
+    const enabledPaths = albumPaths.filter(path => path.isEnabled)
 
-    for (const path of paths) {
+    for (const albumPath of enabledPaths) {
       try {
-        const files = await Filesystem.readdir({ path })
+        const files = await Filesystem.readdir({ path: albumPath.path })
         const filesArray = Array.isArray(files) ? files : []
         for (const file of filesArray) {
           if (file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')) {
             const fileHash = `${file.name}_${file.modifiedTime}`
             const existing = await this.db.getScreenshotByHash(fileHash)
             if (!existing) {
-              const screenshot = await this.createScreenshot(file, path)
+              const screenshot = await this.createScreenshot(file, albumPath.path)
               if (screenshot) {
                 screenshots.push(screenshot)
               }
@@ -57,7 +70,7 @@ class ScreenshotService {
           }
         }
       } catch (error) {
-        console.warn(`Failed to scan ${path}:`, error)
+        console.warn(`Failed to scan ${albumPath.path}:`, error)
       }
     }
 

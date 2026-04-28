@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">截历</string>
-    <string name="title_activity_main">截历</string>
+    <string name="app_name">懒人日程</string>
+    <string name="title_activity_main">懒人日程</string>
     <string name="package_name">com.jieli.app</string>
     <string name="custom_url_scheme">com.jieli.app</string>
 </resources>

@@ -110,3 +110,11 @@ export interface FileEntry {
   size?: number
   modifiedAt?: Date
 }
+
+export interface AlbumPath {
+  id: string
+  name: string
+  path: string
+  isEnabled: boolean
+  isDefault?: boolean
+}

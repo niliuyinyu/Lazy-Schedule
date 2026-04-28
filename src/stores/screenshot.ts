@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Screenshot, ScreenshotGroup, Category, Tag } from '@/types'
+import type { Screenshot, ScreenshotGroup, Category, Tag, AlbumPath } from '@/types'
 import { screenshotService } from '@/services/screenshot'
 
 export const useScreenshotStore = defineStore('screenshot', () => {
@@ -8,6 +8,7 @@ export const useScreenshotStore = defineStore('screenshot', () => {
   const groups = ref<ScreenshotGroup[]>([])
   const categories = ref<Category[]>([])
   const tags = ref<Tag[]>([])
+  const albumPaths = ref<AlbumPath[]>([])
   const isLoading = ref(false)
   const isScanning = ref(false)
   const lastScanTime = ref<Date | null>(null)
@@ -38,6 +39,7 @@ export const useScreenshotStore = defineStore('screenshot', () => {
       await loadScreenshots()
       await loadCategories()
       await loadTags()
+      await loadAlbumPaths()
     } finally {
       isLoading.value = false
     }
@@ -53,6 +55,10 @@ export const useScreenshotStore = defineStore('screenshot', () => {
 
   async function loadTags() {
     tags.value = await screenshotService.getTags()
+  }
+
+  async function loadAlbumPaths() {
+    albumPaths.value = await screenshotService.getAlbumPaths()
   }
 
   async function scanScreenshots() {
@@ -96,11 +102,27 @@ export const useScreenshotStore = defineStore('screenshot', () => {
     await loadScreenshots()
   }
 
+  async function addAlbumPath(albumPath: AlbumPath) {
+    await screenshotService.addAlbumPath(albumPath)
+    await loadAlbumPaths()
+  }
+
+  async function updateAlbumPath(id: string, data: Partial<AlbumPath>) {
+    await screenshotService.updateAlbumPath(id, data)
+    await loadAlbumPaths()
+  }
+
+  async function deleteAlbumPath(id: string) {
+    await screenshotService.deleteAlbumPath(id)
+    await loadAlbumPaths()
+  }
+
   return {
     screenshots,
     groups,
     categories,
     tags,
+    albumPaths,
     isLoading,
     isScanning,
     lastScanTime,
@@ -111,12 +133,16 @@ export const useScreenshotStore = defineStore('screenshot', () => {
     loadScreenshots,
     loadCategories,
     loadTags,
+    loadAlbumPaths,
     scanScreenshots,
     analyzeScreenshot,
     deleteScreenshot,
     updateScreenshot,
     addTag,
     removeTag,
-    saveScreenshot
+    saveScreenshot,
+    addAlbumPath,
+    updateAlbumPath,
+    deleteAlbumPath
   }
 })
